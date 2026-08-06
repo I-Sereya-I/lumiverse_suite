@@ -1,0 +1,67 @@
+[data-lumiverse-module='portrait_dock'] {
+  --portrait-dock-border: var(--lumiverse-border-subtle, var(--lumiverse-border, rgb(255 255 255 / 18%)));
+  --portrait-dock-control-bg: color-mix(in srgb, var(--lcs-glass-bg, #111318) 90%, transparent);
+  --portrait-dock-focus: var(--lumiverse-primary, #a78bfa);
+  box-sizing: border-box;
+  color: var(--lumiverse-text, #f8fafc);
+  min-height: 0;
+  min-width: 0;
+}
+[data-lumiverse-module='portrait_dock'] *,
+[data-lumiverse-module='portrait_dock'] *::before,
+[data-lumiverse-module='portrait_dock'] *::after { box-sizing: border-box; }
+[data-lumiverse-module='portrait_dock'][hidden],
+[data-lumiverse-module='portrait_dock'][data-open='false'] { display: none !important; }
+[data-lumiverse-module='portrait_dock'][data-mode='floating'] { height: min(var(--portrait-dock-height, 440px), calc(100vh - 24px)); left: var(--portrait-dock-left, 32px); max-height: calc(100vh - 24px); max-width: calc(100vw - 24px); pointer-events: none; position: fixed; top: var(--portrait-dock-top, 32px); width: min(var(--portrait-dock-width, 320px), calc(100vw - 24px)); z-index: 10900; }
+[data-lumiverse-module='portrait_dock'][data-mode='side-left'],
+[data-lumiverse-module='portrait_dock'][data-mode='side-right'] { align-self: flex-end; display: flex; flex: 0 1 auto; height: min(var(--portrait-dock-height, 440px), 100%); max-height: 100%; min-height: 0; min-width: 0; position: relative; width: min(var(--portrait-dock-width, 320px), 100%); z-index: 30; }
+.portrait-dock__surface { background: transparent; border: 1px solid var(--portrait-dock-border); border-radius: var(--lumiverse-radius-lg, 18px); box-shadow: var(--lumiverse-shadow-lg, 0 18px 48px rgb(0 0 0 / 32%)); cursor: move; display: grid; flex: 1 1 auto; isolation: isolate; min-height: 0; min-width: 0; overflow: hidden; pointer-events: auto; position: relative; touch-action: none; user-select: none; }
+[data-lumiverse-module='portrait_dock'][data-mode='side-left'] .portrait-dock__surface,
+[data-lumiverse-module='portrait_dock'][data-mode='side-right'] .portrait-dock__surface { height: 100%; width: 100%; }
+.portrait-dock__header { display: contents; }
+.portrait-dock__name,
+.portrait-dock__caption { display: none; }
+.portrait-dock__figure { display: grid; height: 100%; margin: 0; min-height: 0; min-width: 0; overflow: hidden; place-items: stretch; }
+.portrait-dock__image { display: block; height: 100%; min-height: 0; min-width: 0; object-fit: cover; object-position: center bottom; pointer-events: none; width: 100%; }
+.portrait-dock__placeholder { align-items: center; background: var(--portrait-dock-control-bg); color: var(--lumiverse-text-muted, #b8b6c3); display: flex; inset: 0; justify-content: center; padding: 24px; position: absolute; text-align: center; }
+.portrait-dock__placeholder[hidden] { display: none; }
+.portrait-dock__controls { align-items: center; background: var(--portrait-dock-control-bg); border: 1px solid var(--portrait-dock-border); border-radius: 8px; box-shadow: var(--lumiverse-shadow-sm, 0 4px 12px rgb(0 0 0 / 22%)); display: inline-flex; gap: 2px; opacity: 0; padding: 3px; pointer-events: none; position: absolute; right: 6px; top: 6px; transition: opacity 120ms; z-index: 5; }
+[data-lumiverse-module='portrait_dock'][data-hover-controls='false'] .portrait-dock__controls,
+.portrait-dock__surface:hover .portrait-dock__controls,
+.portrait-dock__surface:focus-within .portrait-dock__controls { opacity: 1; pointer-events: auto; }
+.portrait-dock__control { align-items: center; background: transparent; border: 0; border-radius: 6px; color: var(--lumiverse-text, #f8fafc); cursor: pointer; display: inline-flex; font: inherit; font-size: calc(10px * var(--lumiverse-font-scale, 1)); font-weight: 700; height: max(28px, var(--portrait-dock-hover-control-size, 28px)); justify-content: center; min-width: max(28px, var(--portrait-dock-hover-control-size, 28px)); padding: 0 6px; }
+.portrait-dock__control:hover,
+.portrait-dock__control:focus-visible,
+.portrait-dock__control[aria-pressed='true'] { background: var(--lumiverse-fill-hover, rgb(255 255 255 / 12%)); color: var(--portrait-dock-focus); outline: 0; }
+.portrait-dock__modes { align-items: center; border-left: 1px solid var(--portrait-dock-border); display: inline-flex; gap: 1px; margin-left: 2px; padding-left: 3px; }
+.portrait-dock__size-menu { background: var(--portrait-dock-control-bg); border: 1px solid var(--portrait-dock-border); border-radius: 8px; box-shadow: var(--lumiverse-shadow-md, 0 12px 30px rgb(0 0 0 / 30%)); color: inherit; display: grid; gap: 2px; max-height: calc(100% - 54px); min-width: 180px; overflow: auto; padding: 4px; position: absolute; right: 6px; top: 46px; z-index: 6; }
+.portrait-dock__size-menu[hidden] { display: none; }
+.portrait-dock__size-menu-item { background: transparent; border: 0; border-radius: 6px; color: inherit; cursor: pointer; padding: 7px 9px; text-align: left; }
+.portrait-dock__size-menu-item:hover,
+.portrait-dock__size-menu-item:focus-visible { background: var(--lumiverse-fill-hover, rgb(255 255 255 / 12%)); outline: 0; }
+.portrait-dock__resize-handles { inset: 0; pointer-events: none; position: absolute; z-index: 4; }
+.portrait-dock__resize-handle { background: transparent; border: 0; display: block; opacity: 0; padding: 0; pointer-events: auto; position: absolute; touch-action: none; }
+.portrait-dock__surface:hover .portrait-dock__resize-handle,
+.portrait-dock__surface:focus-within .portrait-dock__resize-handle { opacity: 1; }
+.portrait-dock__resize-handle[data-resize-handle='n'], .portrait-dock__resize-handle[data-resize-handle='s'] { height: 10px; left: 12px; right: 12px; }
+.portrait-dock__resize-handle[data-resize-handle='n'] { cursor: ns-resize; top: 0; }
+.portrait-dock__resize-handle[data-resize-handle='s'] { bottom: 0; cursor: ns-resize; }
+.portrait-dock__resize-handle[data-resize-handle='e'], .portrait-dock__resize-handle[data-resize-handle='w'] { bottom: 12px; top: 12px; width: 10px; }
+.portrait-dock__resize-handle[data-resize-handle='e'] { cursor: ew-resize; right: 0; }
+.portrait-dock__resize-handle[data-resize-handle='w'] { cursor: ew-resize; left: 0; }
+.portrait-dock__resize-handle[data-resize-handle='ne'], .portrait-dock__resize-handle[data-resize-handle='nw'], .portrait-dock__resize-handle[data-resize-handle='se'], .portrait-dock__resize-handle[data-resize-handle='sw'] { height: 24px; width: 24px; }
+.portrait-dock__resize-handle[data-resize-handle='ne'] { cursor: nesw-resize; right: 0; top: 0; }
+.portrait-dock__resize-handle[data-resize-handle='nw'] { cursor: nwse-resize; left: 0; top: 0; }
+.portrait-dock__resize-handle[data-resize-handle='se'] { bottom: 0; cursor: nwse-resize; right: 0; }
+.portrait-dock__resize-handle[data-resize-handle='sw'] { bottom: 0; cursor: nesw-resize; left: 0; }
+.portrait-dock__backdrop { display: none; }
+@media (max-width: 720px) {
+  [data-lumiverse-module='portrait_dock'][data-mode='floating'] { bottom: 8px; height: min(var(--portrait-dock-height, 440px), calc(100vh - 16px)); left: 8px; top: auto; width: calc(100vw - 16px); }
+  [data-lumiverse-module='portrait_dock'][data-mode='side-left'],
+  [data-lumiverse-module='portrait_dock'][data-mode='side-right'] { height: 100vh; inset: 0; margin: 0; max-height: none; max-width: none; pointer-events: none; position: fixed; width: 100vw; z-index: 10002; }
+  [data-lumiverse-module='portrait_dock'][data-mode='side-left'] { justify-content: flex-start; }
+  [data-lumiverse-module='portrait_dock'][data-mode='side-right'] { justify-content: flex-end; }
+  [data-lumiverse-module='portrait_dock'][data-mode^='side-'] .portrait-dock__surface { max-width: calc(100vw - 20px); pointer-events: auto; width: min(var(--portrait-dock-width, 360px), calc(100vw - 20px)); }
+  [data-lumiverse-module='portrait_dock'][data-mode^='side-'] .portrait-dock__backdrop { background: rgb(0 0 0 / 45%); display: block; inset: 0; pointer-events: auto; position: fixed; z-index: -1; }
+}
+@media (prefers-reduced-motion: reduce) { .portrait-dock__controls { transition: none; } }

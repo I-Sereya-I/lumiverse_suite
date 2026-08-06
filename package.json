@@ -1,0 +1,21 @@
+{
+  "name": "lumiverse-suite",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "bun build ./src/index.ts --outfile ./dist/frontend.js --target browser --format esm",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "lumiverse-spindle-types": "0.6.12"
+  },
+  "devDependencies": {
+    "@typescript-eslint/parser": "^8.64.0",
+    "bun-types": "^1.3.14",
+    "eslint": "^10.7.0",
+    "typescript": "^6.0.2"
+  }
+}
