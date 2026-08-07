@@ -39,24 +39,79 @@ The library inherits the active Lumiverse theme.
 
 `quick_toolbar` keeps frequent actions close to the conversation and supports both compact and expanded layouts.
 
-| Compact toolbar | Expanded toolbar |
-| --- | --- |
-| [![Animated compact quick toolbar preview](docs/showcase/previews/quick-toolbar-compact.webp)](docs/showcase/quick-toolbar-compact.mp4) | [![Animated expanded quick toolbar preview](docs/showcase/previews/quick-toolbar-v2.webp)](docs/showcase/quick-toolbar-v2.mp4) |
-| [Watch the compact toolbar](docs/showcase/quick-toolbar-compact.mp4) | [Watch the expanded toolbar](docs/showcase/quick-toolbar-v2.mp4) |
+#### Compact toolbar
+
+<p align="center">
+  <a href="docs/showcase/quick-toolbar-compact.mp4">
+    <img src="docs/showcase/previews/quick-toolbar-compact.webp" alt="Animated compact quick toolbar preview" width="100%">
+  </a>
+</p>
+
+[Watch the compact toolbar](docs/showcase/quick-toolbar-compact.mp4)
+
+#### Expanded toolbar
+
+<p align="center">
+  <a href="docs/showcase/quick-toolbar-v2.mp4">
+    <img src="docs/showcase/previews/quick-toolbar-v2.webp" alt="Animated expanded quick toolbar preview" width="100%">
+  </a>
+</p>
+
+[Watch the expanded toolbar](docs/showcase/quick-toolbar-v2.mp4)
 
 ### Lorebook workflow
 
 `lore_indicator`, `lorebook_token_counts`, and `lorebook_workspace` surface active entries and token impact while offering floating, split, and full-workspace editing modes.
 
-| Lore panel | Docked indicators |
-| --- | --- |
-| [![Animated lorebook indicator panel preview](docs/showcase/previews/lorebook-indicator-panel.webp)](docs/showcase/lorebook-indicator-panel.mp4) | [![Animated docked lorebook indicators preview](docs/showcase/previews/lorebook-indicator-dock.webp)](docs/showcase/lorebook-indicator-dock.mp4) |
-| [Watch the lore panel](docs/showcase/lorebook-indicator-panel.mp4) | [Watch the docked indicators](docs/showcase/lorebook-indicator-dock.mp4) |
+#### Lore panel
 
-| Floating editor | Split editor | Full workspace |
-| --- | --- | --- |
-| [![Animated floating lorebook editor preview](docs/showcase/previews/lorebook-editor-window.webp)](docs/showcase/lorebook-editor-window.mp4) | [![Animated split lorebook editor preview](docs/showcase/previews/lorebook-editor-half.webp)](docs/showcase/lorebook-editor-half.mp4) | [![Animated full lorebook workspace preview](docs/showcase/previews/lorebook-editor-full.webp)](docs/showcase/lorebook-editor-full.mp4) |
-| [Watch the floating editor](docs/showcase/lorebook-editor-window.mp4) | [Watch the split editor](docs/showcase/lorebook-editor-half.mp4) | [Watch the full workspace](docs/showcase/lorebook-editor-full.mp4) |
+<p align="center">
+  <a href="docs/showcase/lorebook-indicator-panel.mp4">
+    <img src="docs/showcase/previews/lorebook-indicator-panel.webp" alt="Animated lorebook indicator panel preview" width="100%">
+  </a>
+</p>
+
+[Watch the lore panel](docs/showcase/lorebook-indicator-panel.mp4)
+
+#### Docked indicators
+
+<p align="center">
+  <a href="docs/showcase/lorebook-indicator-dock.mp4">
+    <img src="docs/showcase/previews/lorebook-indicator-dock.webp" alt="Animated docked lorebook indicators preview" width="100%">
+  </a>
+</p>
+
+[Watch the docked indicators](docs/showcase/lorebook-indicator-dock.mp4)
+
+#### Floating editor
+
+<p align="center">
+  <a href="docs/showcase/lorebook-editor-window.mp4">
+    <img src="docs/showcase/previews/lorebook-editor-window.webp" alt="Animated floating lorebook editor preview" width="100%">
+  </a>
+</p>
+
+[Watch the floating editor](docs/showcase/lorebook-editor-window.mp4)
+
+#### Split editor
+
+<p align="center">
+  <a href="docs/showcase/lorebook-editor-half.mp4">
+    <img src="docs/showcase/previews/lorebook-editor-half.webp" alt="Animated split lorebook editor preview" width="100%">
+  </a>
+</p>
+
+[Watch the split editor](docs/showcase/lorebook-editor-half.mp4)
+
+#### Full workspace
+
+<p align="center">
+  <a href="docs/showcase/lorebook-editor-full.mp4">
+    <img src="docs/showcase/previews/lorebook-editor-full.webp" alt="Animated full lorebook workspace preview" width="100%">
+  </a>
+</p>
+
+[Watch the full workspace](docs/showcase/lorebook-editor-full.mp4)
 
 ### Character portrait dock
 
