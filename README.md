@@ -31,7 +31,7 @@ The library inherits the active Lumiverse theme.
 
 `connections_picker` provides one searchable surface for providers, models, saved connections, profiles, and tags.
 
-[![Connections picker preview](docs/showcase/posters/connections-picker.jpg)](docs/showcase/connections-picker.mp4)
+[![Animated connections picker preview](docs/showcase/previews/connections-picker.webp)](docs/showcase/connections-picker.mp4)
 
 [Watch the connections picker showcase](docs/showcase/connections-picker.mp4)
 
@@ -41,7 +41,7 @@ The library inherits the active Lumiverse theme.
 
 | Compact toolbar | Expanded toolbar |
 | --- | --- |
-| [![Compact quick toolbar preview](docs/showcase/posters/quick-toolbar-compact.jpg)](docs/showcase/quick-toolbar-compact.mp4) | [![Expanded quick toolbar preview](docs/showcase/posters/quick-toolbar-v2.jpg)](docs/showcase/quick-toolbar-v2.mp4) |
+| [![Animated compact quick toolbar preview](docs/showcase/previews/quick-toolbar-compact.webp)](docs/showcase/quick-toolbar-compact.mp4) | [![Animated expanded quick toolbar preview](docs/showcase/previews/quick-toolbar-v2.webp)](docs/showcase/quick-toolbar-v2.mp4) |
 | [Watch the compact toolbar](docs/showcase/quick-toolbar-compact.mp4) | [Watch the expanded toolbar](docs/showcase/quick-toolbar-v2.mp4) |
 
 ### Lorebook workflow
@@ -50,19 +50,19 @@ The library inherits the active Lumiverse theme.
 
 | Lore panel | Docked indicators |
 | --- | --- |
-| [![Lorebook indicator panel preview](docs/showcase/posters/lorebook-indicator-panel.jpg)](docs/showcase/lorebook-indicator-panel.mp4) | [![Docked lorebook indicators preview](docs/showcase/posters/lorebook-indicator-dock.jpg)](docs/showcase/lorebook-indicator-dock.mp4) |
+| [![Animated lorebook indicator panel preview](docs/showcase/previews/lorebook-indicator-panel.webp)](docs/showcase/lorebook-indicator-panel.mp4) | [![Animated docked lorebook indicators preview](docs/showcase/previews/lorebook-indicator-dock.webp)](docs/showcase/lorebook-indicator-dock.mp4) |
 | [Watch the lore panel](docs/showcase/lorebook-indicator-panel.mp4) | [Watch the docked indicators](docs/showcase/lorebook-indicator-dock.mp4) |
 
 | Floating editor | Split editor | Full workspace |
 | --- | --- | --- |
-| [![Floating lorebook editor preview](docs/showcase/posters/lorebook-editor-window.jpg)](docs/showcase/lorebook-editor-window.mp4) | [![Split lorebook editor preview](docs/showcase/posters/lorebook-editor-half.jpg)](docs/showcase/lorebook-editor-half.mp4) | [![Full lorebook workspace preview](docs/showcase/posters/lorebook-editor-full.jpg)](docs/showcase/lorebook-editor-full.mp4) |
+| [![Animated floating lorebook editor preview](docs/showcase/previews/lorebook-editor-window.webp)](docs/showcase/lorebook-editor-window.mp4) | [![Animated split lorebook editor preview](docs/showcase/previews/lorebook-editor-half.webp)](docs/showcase/lorebook-editor-half.mp4) | [![Animated full lorebook workspace preview](docs/showcase/previews/lorebook-editor-full.webp)](docs/showcase/lorebook-editor-full.mp4) |
 | [Watch the floating editor](docs/showcase/lorebook-editor-window.mp4) | [Watch the split editor](docs/showcase/lorebook-editor-half.mp4) | [Watch the full workspace](docs/showcase/lorebook-editor-full.mp4) |
 
 ### Character portrait dock
 
 `portrait_dock` can pin, resize, reposition, dock, or float the active character portrait without covering the conversation.
 
-[![Character portrait dock preview](docs/showcase/posters/character-portrait-dock.jpg)](docs/showcase/character-portrait-dock.mp4)
+[![Animated character portrait dock preview](docs/showcase/previews/character-portrait-dock.webp)](docs/showcase/character-portrait-dock.mp4)
 
 [Watch the character portrait dock showcase](docs/showcase/character-portrait-dock.mp4)
 
@@ -70,7 +70,7 @@ The library inherits the active Lumiverse theme.
 
 Configure toolbar actions and order, picker variants and dimensions, library density and metadata, lorebook presentation, and portrait behavior from the suite's settings surfaces.
 
-[![Lumiverse Suite feature settings preview](docs/showcase/posters/productivity-settings.jpg)](docs/showcase/productivity-settings.mp4)
+[![Animated Lumiverse Suite feature settings preview](docs/showcase/previews/productivity-settings.webp)](docs/showcase/productivity-settings.mp4)
 
 [Watch the suite settings showcase](docs/showcase/productivity-settings.mp4)
 
