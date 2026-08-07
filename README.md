@@ -5,6 +5,75 @@ ships a nine-module feature suite as one repository and one install record. The
 module identifiers below are registry IDs, not independently installable
 extensions.
 
+## Feature showcase
+
+The suite extends Lumiverse from the homepage through the full chat workflow. Start with the redesigned character library, then explore the connection, toolbar, lorebook, portrait, and customization surfaces included in the extension.
+
+### Homepage character library
+
+`homepage_library`, `character_display`, and `character_library_scope` turn the homepage into a searchable visual library with filters, sorting, tags, favorites, scope controls, theme support, and infinite scrolling.
+
+[![Lumiverse homepage character library with infinite scrolling](docs/showcase/homepage-character-library.jpg)](docs/showcase/homepage-character-library.jpg)
+
+Open a character profile directly from the library to review its portrait, metadata, tags, attached lorebooks, and latest chat.
+
+<p align="center">
+  <a href="docs/showcase/homepage-character-profile.png">
+    <img src="docs/showcase/homepage-character-profile.png" alt="Character profile panel opened from the Lumiverse homepage" width="360">
+  </a>
+</p>
+
+The library inherits the active Lumiverse theme.
+
+[![Lumiverse homepage character library using an alternate theme](docs/showcase/homepage-alternate-theme.jpg)](docs/showcase/homepage-alternate-theme.jpg)
+
+### Connections picker
+
+`connections_picker` provides one searchable surface for providers, models, saved connections, profiles, and tags.
+
+[![Connections picker preview](docs/showcase/posters/connections-picker.jpg)](docs/showcase/connections-picker.mp4)
+
+[Watch the connections picker showcase](docs/showcase/connections-picker.mp4)
+
+### Quick toolbar
+
+`quick_toolbar` keeps frequent actions close to the conversation and supports both compact and expanded layouts.
+
+| Compact toolbar | Expanded toolbar |
+| --- | --- |
+| [![Compact quick toolbar preview](docs/showcase/posters/quick-toolbar-compact.jpg)](docs/showcase/quick-toolbar-compact.mp4) | [![Expanded quick toolbar preview](docs/showcase/posters/quick-toolbar-v2.jpg)](docs/showcase/quick-toolbar-v2.mp4) |
+| [Watch the compact toolbar](docs/showcase/quick-toolbar-compact.mp4) | [Watch the expanded toolbar](docs/showcase/quick-toolbar-v2.mp4) |
+
+### Lorebook workflow
+
+`lore_indicator`, `lorebook_token_counts`, and `lorebook_workspace` surface active entries and token impact while offering floating, split, and full-workspace editing modes.
+
+| Lore panel | Docked indicators |
+| --- | --- |
+| [![Lorebook indicator panel preview](docs/showcase/posters/lorebook-indicator-panel.jpg)](docs/showcase/lorebook-indicator-panel.mp4) | [![Docked lorebook indicators preview](docs/showcase/posters/lorebook-indicator-dock.jpg)](docs/showcase/lorebook-indicator-dock.mp4) |
+| [Watch the lore panel](docs/showcase/lorebook-indicator-panel.mp4) | [Watch the docked indicators](docs/showcase/lorebook-indicator-dock.mp4) |
+
+| Floating editor | Split editor | Full workspace |
+| --- | --- | --- |
+| [![Floating lorebook editor preview](docs/showcase/posters/lorebook-editor-window.jpg)](docs/showcase/lorebook-editor-window.mp4) | [![Split lorebook editor preview](docs/showcase/posters/lorebook-editor-half.jpg)](docs/showcase/lorebook-editor-half.mp4) | [![Full lorebook workspace preview](docs/showcase/posters/lorebook-editor-full.jpg)](docs/showcase/lorebook-editor-full.mp4) |
+| [Watch the floating editor](docs/showcase/lorebook-editor-window.mp4) | [Watch the split editor](docs/showcase/lorebook-editor-half.mp4) | [Watch the full workspace](docs/showcase/lorebook-editor-full.mp4) |
+
+### Character portrait dock
+
+`portrait_dock` can pin, resize, reposition, dock, or float the active character portrait without covering the conversation.
+
+[![Character portrait dock preview](docs/showcase/posters/character-portrait-dock.jpg)](docs/showcase/character-portrait-dock.mp4)
+
+[Watch the character portrait dock showcase](docs/showcase/character-portrait-dock.mp4)
+
+### Suite settings
+
+Configure toolbar actions and order, picker variants and dimensions, library density and metadata, lorebook presentation, and portrait behavior from the suite's settings surfaces.
+
+[![Lumiverse Suite feature settings preview](docs/showcase/posters/productivity-settings.jpg)](docs/showcase/productivity-settings.mp4)
+
+[Watch the suite settings showcase](docs/showcase/productivity-settings.mp4)
+
 ## Identity and layout
 
 - Source: `spindle-extensions/lumiverse_suite/`
