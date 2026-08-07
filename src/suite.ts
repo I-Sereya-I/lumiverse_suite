@@ -252,6 +252,7 @@ export function createSuite(
           started.push({ module: registration.module, styles: moduleStyles })
         } catch (error) {
           diagnostics.push({ moduleId: registration.module.id, error })
+          console.error('[Lumiverse Suite] Module start failed:', registration.module.id, error)
           try {
             await registration.module.stop()
           } catch {

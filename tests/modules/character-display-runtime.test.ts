@@ -219,6 +219,9 @@ function createHarness(): Harness {
     toggleBatch(id: string, selected: boolean) {
       navigationCalls.push(`toggleBatch:${id}:${selected}`)
     },
+    openWorldBook(id: string) {
+      navigationCalls.push(`openWorldBook:${id}`)
+    },
   }
 
   return {
@@ -445,6 +448,8 @@ describe('character display runtime', () => {
   test('renders attached lorebooks and drives the This chat grid through core surface events', async () => {
     const harness = createHarness()
     const selections: Array<CharacterDisplaySelection | null> = []
+    const chats = deferred<readonly CharacterDisplayChatSummary[]>()
+    harness.chats.set('character-a', chats.promise)
     harness.adapter.listAttachedWorldBooks = async () => [
       { id: 'book-a', name: 'Book A' },
       { id: 'book-b', name: 'Book B' },
@@ -459,6 +464,13 @@ describe('character display runtime', () => {
     runtime.updateSelection({ characterId: 'character-a', surface: 'characters-tab' })
     await flushAsyncWork()
     expect(harness.root.querySelector('[data-character-display-world-books]')?.textContent).toContain('Book A')
+
+    const book = harness.root.querySelector<HTMLButtonElement>('[data-character-display-world-book-action="open"]')
+    book?.click()
+    chats.resolve([])
+    await flushAsyncWork()
+    book?.click()
+    expect(harness.navigationCalls).toEqual(['openWorldBook:book-a', 'openWorldBook:book-a'])
 
     const chip = harness.root.querySelector<HTMLButtonElement>('[data-character-display-this-chat]')
     chip?.click()
@@ -475,6 +487,8 @@ describe('character display runtime', () => {
     grid?.emit('toggleBatch', { characterId: 'character-b', selected: true })
     expect(selections.at(-1)).toMatchObject({ characterId: 'character-b', surface: 'characters-tab' })
     expect(harness.navigationCalls).toEqual([
+      'openWorldBook:book-a',
+      'openWorldBook:book-a',
       'openCharacter:character-b',
       'editCharacter:character-b',
       'toggleFavorite:character-b',

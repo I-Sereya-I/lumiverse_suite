@@ -43,7 +43,7 @@ function settings(patch: Partial<PortraitDockSettings> = {}): PortraitDockSettin
   }
 }
 
-function createHarness(options: { saved?: unknown; canonical?: unknown; strictCore?: boolean } = {}) {
+function createHarness(options: { saved?: unknown; canonical?: unknown; strictCore?: boolean; onMountHostSurface?: () => void } = {}) {
   const values = new Map<string, unknown>([[PORTRAIT_DOCK_SETTINGS_KEY, options.saved ?? settings()]])
   let canonical = options.canonical
   const watchers = new Map<string, Set<Listener>>()
@@ -51,6 +51,7 @@ function createHarness(options: { saved?: unknown; canonical?: unknown; strictCo
   const mounts: string[] = []
   const surfaces: SurfaceRecord[] = []
   const settingWrites: Array<{ key: string; value: unknown }> = []
+  let privateGets = 0
   const sideMount = dom.window.document.querySelector<HTMLElement>('[data-spindle-mount="chat_surface_side"]')!
 
   const notify = (listeners: Iterable<Listener>, value: unknown) => {
@@ -59,7 +60,7 @@ function createHarness(options: { saved?: unknown; canonical?: unknown; strictCo
   const context = {
     moduleId: 'portrait_dock',
     settings: {
-      get: async <T>(key: string) => values.get(key) as T | undefined,
+      get: async <T>(key: string) => { privateGets += 1; return values.get(key) as T | undefined },
       set: async <T>(key: string, value: T) => {
         values.set(key, value)
         settingWrites.push({ key, value: structuredClone(value) })
@@ -107,6 +108,7 @@ function createHarness(options: { saved?: unknown; canonical?: unknown; strictCo
             active: true,
           }
           surfaces.push(record)
+          options.onMountHostSurface?.()
           return {
             update(next: UnknownRecord) {
               record.updates.push({ ...next })
@@ -135,6 +137,7 @@ function createHarness(options: { saved?: unknown; canonical?: unknown; strictCo
     mounts,
     surfaces,
     settingWrites,
+    get privateGets() { return privateGets },
     sideMount,
     watchers,
     coreWatchers,
@@ -159,6 +162,25 @@ describe('portrait dock host-surface lifecycle', () => {
     expect(harness.surfaces).toHaveLength(1)
     expect(harness.surfaces[0]).toMatchObject({ id: 'portrait_dock.workspace', target: harness.sideMount })
     expect(harness.surfaces[0]?.props).toMatchObject({ contractVersion: 1, ownerToken: 'portrait-dock-test-extension', generation: 2, capabilities: [], state: settings({ enabled: true, open: true }) })
+    await module.stop()
+  })
+
+  test('does not duplicate a portrait mount during re-entrant reconciliation', async () => {
+    let reentered = false
+    const harness = createHarness({
+      saved: settings({ enabled: true }),
+      onMountHostSurface: () => {
+        if (reentered) return
+        reentered = true
+        harness.emitCanonical(settings({ enabled: true, open: true }))
+      },
+    })
+    const module = createPortraitDockModule()
+
+    await module.start(harness.context)
+
+    expect(harness.mounts).toEqual(['chat_surface_side'])
+    expect(harness.surfaces).toHaveLength(1)
     await module.stop()
   })
 
@@ -203,6 +225,15 @@ describe('portrait dock host-surface lifecycle', () => {
     expect(surface.destroys).toBe(0)
     expect(surface.updates.at(-1)?.state).toMatchObject({ enabled: true, mode: 'floating', rect: { x: 20, y: 30, width: 400, height: 500 } })
     expect(harness.settingWrites).toEqual([])
+    await module.stop()
+  })
+
+  test('does not read the private compatibility row when canonical settings exist', async () => {
+    const harness = createHarness({ saved: settings({ enabled: false }), canonical: settings({ enabled: true }) })
+    const module = createPortraitDockModule()
+    await module.start(harness.context)
+
+    expect(harness.privateGets).toBe(0)
     await module.stop()
   })
 

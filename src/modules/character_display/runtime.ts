@@ -257,6 +257,7 @@ export function createCharacterDisplayRuntime(options: CharacterDisplayRuntimeOp
   const surfaceCleanups: Cleanup[] = []
   const gridSurfaceCleanups: Cleanup[] = []
   let chatCleanups: Cleanup[] = []
+  let worldBookCleanups: Cleanup[] = []
 
   const componentCandidates = (): readonly unknown[] => {
     const candidates: unknown[] = []
@@ -275,6 +276,13 @@ export function createCharacterDisplayRuntime(options: CharacterDisplayRuntimeOp
   const clearChatListeners = (): void => {
     while (chatCleanups.length > 0) {
       const cleanup = chatCleanups.pop()
+      try { cleanup?.() } catch { /* listener cleanup is isolated */ }
+    }
+  }
+
+  const clearWorldBookListeners = (): void => {
+    while (worldBookCleanups.length > 0) {
+      const cleanup = worldBookCleanups.pop()
       try { cleanup?.() } catch { /* listener cleanup is isolated */ }
     }
   }
@@ -466,13 +474,25 @@ export function createCharacterDisplayRuntime(options: CharacterDisplayRuntimeOp
   }
   const renderWorldBooks = (status: string): void => {
     if (!nodes) return
+    clearWorldBookListeners()
     nodes.worldBookList.replaceChildren()
     setText(nodes.worldBookStatus, status)
     nodes.worldBookStatus.dataset.state = status.toLowerCase().startsWith('failed') ? 'error' : 'ready'
     for (const book of worldBooks.slice(0, 100)) {
       const item = document.createElement('li')
       item.dataset.characterDisplayWorldBook = book.id
-      item.textContent = book.name
+      const button = document.createElement('button')
+      button.type = 'button'
+      button.textContent = book.name
+      button.setAttribute('aria-label', `Open world book ${book.name}`)
+      button.dataset.characterDisplayWorldBookAction = 'open'
+      const listener = (): void => {
+        if (destroyed) return
+        methodResult([adapter], 'openWorldBook', book.id)
+      }
+      button.addEventListener('click', listener)
+      worldBookCleanups.push(() => button.removeEventListener('click', listener))
+      item.append(button)
       nodes.worldBookList.append(item)
     }
   }
@@ -1033,6 +1053,7 @@ export function createCharacterDisplayRuntime(options: CharacterDisplayRuntimeOp
     destroySurface()
     destroyGridSurface()
     clearChatListeners()
+    clearWorldBookListeners()
     for (const binding of controls.values()) {
       safeDestroy(binding.handle)
       try { binding.destroyFallback?.() } catch { /* fallback teardown is isolated */ }

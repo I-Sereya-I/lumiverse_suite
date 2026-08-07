@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test } from 'bun:test'
+import { afterEach, beforeEach, describe, expect, spyOn, test } from 'bun:test'
 import { JSDOM } from 'jsdom'
 import { MODULE_IDS, createSuite } from '../src/suite'
 import type { ModuleId, SuiteHostContext, SuiteModule } from '../src/suite'
@@ -290,7 +290,8 @@ describe('Lumiverse Suite runtime', () => {
 
   test('records a failed module, cleans it up, and keeps healthy siblings in reverse teardown order', async () => {
     const calls: string[] = []
-    const startupError = new Error('lore indicator start failed')
+    const startupError = Object.assign(new Error('lore indicator start failed'), { privateContext: 'do not expose' })
+    const consoleError = spyOn(console, 'error').mockImplementation(() => undefined)
     const suite = createSuite(context([]), [
       { module: module('quick_toolbar', calls), enabled: true },
       {
@@ -311,29 +312,38 @@ describe('Lumiverse Suite runtime', () => {
       { module: module('connections_picker', calls), enabled: true },
     ])
 
-    await suite.start()
+    try {
+      await suite.start()
 
-    expect(calls).toEqual([
-      'start:quick_toolbar',
-      'start:lore_indicator',
-      'stop:lore_indicator',
-      'start:connections_picker',
-    ])
-    expect(suite.getDiagnostics()).toEqual([{ moduleId: 'lore_indicator', error: startupError }])
-    expect(document.querySelector('[data-lumiverse-module="lore_indicator"]')).toBeNull()
+      expect(calls).toEqual([
+        'start:quick_toolbar',
+        'start:lore_indicator',
+        'stop:lore_indicator',
+        'start:connections_picker',
+      ])
+      expect(suite.getDiagnostics()).toEqual([{ moduleId: 'lore_indicator', error: startupError }])
+      expect(consoleError).toHaveBeenCalledWith(
+        '[Lumiverse Suite] Module start failed:',
+        'lore_indicator',
+        startupError,
+      )
+      expect(document.querySelector('[data-lumiverse-module="lore_indicator"]')).toBeNull()
 
-    await suite.stop()
-    await suite.stop()
+      await suite.stop()
+      await suite.stop()
 
-    expect(calls).toEqual([
-      'start:quick_toolbar',
-      'start:lore_indicator',
-      'stop:lore_indicator',
-      'start:connections_picker',
-      'stop:connections_picker',
-      'stop:quick_toolbar',
-    ])
-    expect(suite.getDiagnostics()[0]?.error).toBe(startupError)
+      expect(calls).toEqual([
+        'start:quick_toolbar',
+        'start:lore_indicator',
+        'stop:lore_indicator',
+        'start:connections_picker',
+        'stop:connections_picker',
+        'stop:quick_toolbar',
+      ])
+      expect(suite.getDiagnostics()[0]?.error).toBe(startupError)
+    } finally {
+      consoleError.mockRestore()
+    }
   })
 
   test('stops started modules once in reverse start order', async () => {

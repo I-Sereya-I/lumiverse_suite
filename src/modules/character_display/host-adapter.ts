@@ -126,6 +126,7 @@ export interface CharacterDisplayHostAdapter {
   ): void | Promise<void>
   openCharacter(characterId: string): void | Promise<void>
   openChat(chatId: string): void | Promise<void>
+  openWorldBook(bookId: string): void | Promise<void>
   editCharacter(characterId: string): void | Promise<void>
   toggleFavorite(characterId: string): void | Promise<void>
   toggleBatch(characterId: string, selected: boolean): void | Promise<void>
@@ -929,6 +930,12 @@ export function createCharacterDisplayHostAdapter(ctx: SuiteHostContext): Charac
     return navigate({ kind: 'route', id: '/chat/:chatId' }, { id: normalizedId })
   }
 
+  const openWorldBook = (bookId: string): void | Promise<void> => {
+    const normalizedId = id(bookId)
+    if (!normalizedId) return
+    return navigate({ kind: 'modal', id: 'world_book_editor' }, { id: normalizedId })
+  }
+
   const editCharacter = (characterId: string): void | Promise<void> => {
     const normalizedId = id(characterId)
     if (!normalizedId) return
@@ -994,6 +1001,7 @@ export function createCharacterDisplayHostAdapter(ctx: SuiteHostContext): Charac
     navigate,
     openCharacter,
     openChat,
+    openWorldBook,
     editCharacter,
     toggleFavorite,
     toggleBatch,
