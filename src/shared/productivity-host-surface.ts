@@ -6,6 +6,18 @@ type SurfaceHandle = {
   on?(event: string, listener: (payload: unknown) => void): () => void
 }
 
+type InputActionHandle = {
+  onClick?(listener: () => void): () => void
+  destroy?(): void
+}
+
+type QuickToolbarActionOptions = {
+  readonly id: string
+  readonly label: string
+  readonly subtitle: string
+  readonly iconName: string
+}
+
 type SurfaceSettingsApi = {
   get<T>(key: string): Promise<T | undefined>
   set<T>(key: string, value: T): Promise<void>
@@ -28,6 +40,7 @@ type SurfaceModuleOptions<T> = {
     readonly surfaceId: 'connections_picker.launcher'
     readonly mountPoint: (settings: T) => string
   }
+  readonly quickToolbarAction?: QuickToolbarActionOptions
   readonly panel?: {
     readonly surfaceId: 'activated_lore.panel'
     readonly mountPoint: (settings: T) => string
@@ -71,6 +84,8 @@ export function createProductivityHostSurfaceModule<T>(options: SurfaceModuleOpt
   let launcherGeneration = 0
   let panelOpen = false
   let handledCommands = new Set<string>()
+  let quickToolbarActionHandle: InputActionHandle | undefined
+  let quickToolbarActionStop: (() => void) | undefined
 
   const clearSurface = () => {
     generation += 1
@@ -88,6 +103,13 @@ export function createProductivityHostSurfaceModule<T>(options: SurfaceModuleOpt
     try { launcherHandle?.destroy?.() } catch { /* idempotent host cleanup */ }
     launcherHandle = undefined
     launcherPoint = undefined
+  }
+
+  const clearQuickToolbarAction = () => {
+    quickToolbarActionStop?.()
+    quickToolbarActionStop = undefined
+    try { quickToolbarActionHandle?.destroy?.() } catch { /* idempotent host cleanup */ }
+    quickToolbarActionHandle = undefined
   }
 
   const props = (surfaceId: SurfaceModuleOptions<T>['surfaceId'] | 'activated_lore.panel'): Record<string, unknown> => ({
@@ -114,7 +136,10 @@ export function createProductivityHostSurfaceModule<T>(options: SurfaceModuleOpt
 
   const hostApi = () => {
     const host = context ? context.host as unknown as {
-      ui?: { mount?(point: string): unknown }
+      ui?: {
+        mount?(point: string): unknown
+        registerInputBarAction?(options: QuickToolbarActionOptions & { placement: string; enabled: boolean }): InputActionHandle
+      }
       components?: { mountHostSurface?(target: unknown, id: string, props: Record<string, unknown>): SurfaceHandle }
     } : undefined
     return host?.ui?.mount && host.components?.mountHostSurface ? host : undefined
@@ -162,6 +187,25 @@ export function createProductivityHostSurfaceModule<T>(options: SurfaceModuleOpt
     }
   }
 
+  const mountQuickToolbarAction = (host: NonNullable<ReturnType<typeof hostApi>>) => {
+    const descriptor = options.quickToolbarAction
+    const register = host.ui?.registerInputBarAction
+    if (!descriptor || !register || quickToolbarActionHandle) return
+    quickToolbarActionHandle = register({
+      id: descriptor.id,
+      label: descriptor.label,
+      subtitle: descriptor.subtitle,
+      iconName: descriptor.iconName,
+      placement: 'quick_toolbar',
+      enabled: true,
+    }) as InputActionHandle
+    quickToolbarActionStop = quickToolbarActionHandle.onClick?.(() => {
+      if (!running || !settings || !options.enabled(settings)) return
+      panelOpen = true
+      reconcile()
+    })
+  }
+
   const mountSurface = (host: NonNullable<ReturnType<typeof hostApi>>) => {
     if (!settings || (options.surfaceId === 'connections_picker.panel' && !panelOpen)) {
       clearSurface()
@@ -206,12 +250,14 @@ export function createProductivityHostSurfaceModule<T>(options: SurfaceModuleOpt
   const reconcile = () => {
     if (!running || !context || !settings || !options.enabled(settings)) {
       panelOpen = false
+      clearQuickToolbarAction()
       clearLauncher()
       clearSurface()
       return
     }
     const host = hostApi()
     if (!host) return
+    mountQuickToolbarAction(host)
     mountLauncher(host)
     mountSurface(host)
   }
@@ -222,6 +268,7 @@ export function createProductivityHostSurfaceModule<T>(options: SurfaceModuleOpt
     watchStop = undefined
     clearLauncher()
     clearSurface()
+    clearQuickToolbarAction()
     handledCommands.clear()
     panelOpen = false
     settings = undefined

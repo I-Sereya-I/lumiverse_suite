@@ -14,5 +14,11 @@ export function createConnectionsPickerModule() {
       surfaceId: 'connections_picker.launcher',
       mountPoint: () => 'chat_actions',
     },
+    quickToolbarAction: {
+      id: 'lumiverse_suite.connections_picker.open',
+      label: 'Connections Picker',
+      subtitle: 'Choose the active connection and model',
+      iconName: 'waypoints',
+    },
   })
 }
