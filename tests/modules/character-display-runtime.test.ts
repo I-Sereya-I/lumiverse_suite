@@ -312,6 +312,7 @@ describe('character display runtime', () => {
     const surface = harness.surfaces.find(candidate => candidate.id === 'character_card')
     expect(surface).toBeDefined()
     expect(surface?.props.characterId).toBe('character-a')
+    expect((surface?.target as HTMLElement | undefined)?.style.height).toBe('298px')
 
     invokeControl(findControl(harness, 'Use homepage settings'), false)
     const switchChange = settingChanges.at(-1)
@@ -324,6 +325,12 @@ describe('character display runtime', () => {
     expect(widthChange).toMatchObject({ thumbnailWidth: 240 })
     runtime.updateSettings(widthChange!)
     expect((surface?.target as HTMLElement | undefined)?.style.minWidth).toBe('240px')
+
+    invokeControl(findControl(harness, 'Footer'), 'spacious')
+    const footerChange = settingChanges.at(-1)
+    expect(footerChange).toMatchObject({ footerMode: 'spacious' })
+    runtime.updateSettings(footerChange!)
+    expect((surface?.target as HTMLElement | undefined)?.style.height).toBe('318px')
 
     invokeControl(findControl(harness, 'Visible metadata'), ['tags'])
     const metadataChange = settingChanges.at(-1)

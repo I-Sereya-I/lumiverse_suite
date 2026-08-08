@@ -1,4 +1,4 @@
-import { resolveCharacterDisplaySettings } from './settings-model'
+import { getCharacterGridMetrics, resolveCharacterDisplaySettings } from './settings-model'
 import type {
   CharacterDisplayChatSummary,
   CharacterDisplaySelection,
@@ -20,6 +20,13 @@ type SurfaceHandle = ComponentHandle & {
 }
 
 type Cleanup = () => void
+
+function applyCardTargetMetrics(target: HTMLElement, settings: CharacterDisplaySettings): void {
+  const metrics = getCharacterGridMetrics(settings)
+  target.style.minWidth = `${metrics.cardMinWidth}px`
+  // `rowHeight` includes the grid gap; a standalone preview card does not.
+  target.style.height = `${metrics.imageHeight + metrics.footerHeight}px`
+}
 
 type RuntimeNodes = {
   readonly settingsSection: HTMLElement
@@ -660,8 +667,7 @@ export function createCharacterDisplayRuntime(options: CharacterDisplayRuntimeOp
       return
     }
 
-    nodes.cardTarget.style.minWidth = `${Math.max(96, numberValue(settings.thumbnailWidth, 170))}px`
-    nodes.cardTarget.style.height = `${Math.max(120, numberValue(settings.thumbnailHeight, 226))}px`
+    applyCardTargetMetrics(nodes.cardTarget, settings)
     mountCharacterSurface(id)
     applyCharacterDetails()
     renderChats('Loading chats...')
@@ -728,8 +734,7 @@ export function createCharacterDisplayRuntime(options: CharacterDisplayRuntimeOp
     root.dataset.defaultFilter = settings.defaultFilter
     root.style.setProperty('--character-display-thumbnail-width', `${settings.thumbnailWidth}px`)
     root.style.setProperty('--character-display-thumbnail-height', `${settings.thumbnailHeight}px`)
-    nodes.cardTarget.style.minWidth = `${Math.max(96, numberValue(settings.thumbnailWidth, 170))}px`
-    nodes.cardTarget.style.height = `${Math.max(120, numberValue(settings.thumbnailHeight, 226))}px`
+    applyCardTargetMetrics(nodes.cardTarget, settings)
     const updates: Record<string, unknown> = {
       surface: editingSurface,
       useHomepageSettings: settings.useHomepageSettings,
@@ -958,8 +963,7 @@ export function createCharacterDisplayRuntime(options: CharacterDisplayRuntimeOp
     previewHeading.style.margin = '0'
     const cardTarget = document.createElement('div')
     cardTarget.dataset.characterDisplayCardSurface = 'true'
-    cardTarget.style.minWidth = `${Math.max(96, numberValue(settings.thumbnailWidth, 170))}px`
-    cardTarget.style.height = `${Math.max(120, numberValue(settings.thumbnailHeight, 226))}px`
+    applyCardTargetMetrics(cardTarget, settings)
     cardTarget.style.minHeight = '120px'
     cardTarget.style.display = 'grid'
     cardTarget.style.placeItems = 'stretch'

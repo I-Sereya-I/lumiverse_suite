@@ -367,6 +367,22 @@
 [data-lumiverse-module="quick_toolbar"].lumiverse-quick-toolbar[data-orientation="vertical"] .lumiverse-quick-toolbar__control[data-customize="true"] { width: 76px; min-height: 32px; }
 
 @media (max-width: 760px) {
-  [data-lumiverse-module="quick_toolbar"].lumiverse-quick-toolbar__context-strip { width: calc(100vw - 24px); max-width: calc(100vw - 24px); }
+  [data-lumiverse-module="quick_toolbar"].lumiverse-quick-toolbar__context-strip { width: calc(100vw - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px) - 24px); max-width: calc(100vw - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px) - 24px); }
   [data-lumiverse-module="quick_toolbar"].lumiverse-quick-toolbar__context-card { min-width: 122px; }
+
+  [data-lumiverse-module="quick_toolbar"].lumiverse-quick-toolbar:not([data-dock-request="strip"]) {
+    box-sizing: border-box;
+    left: calc(env(safe-area-inset-left, 0px) + 12px) !important;
+    right: calc(env(safe-area-inset-right, 0px) + 12px) !important;
+    top: calc(var(--app-interactive-safe-top, env(safe-area-inset-top, 0px)) + 12px) !important;
+    max-width: none;
+    width: auto !important;
+  }
+
+  [data-lumiverse-module="quick_toolbar"] .lumiverse-quick-toolbar__action,
+  [data-lumiverse-module="quick_toolbar"] .lumiverse-quick-toolbar__control,
+  [data-lumiverse-module="quick_toolbar"] .lumiverse-quick-toolbar__drag-surface {
+    min-height: 44px;
+    min-width: 44px;
+  }
 }
