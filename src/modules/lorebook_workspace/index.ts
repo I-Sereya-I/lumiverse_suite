@@ -375,8 +375,8 @@ export function createLorebookWorkspaceModule(): SuiteModule {
     const actions: Array<{ id: string; label: string; tooltip: string; surfaceId: typeof HALF_WORKSPACE_SURFACE_ID | typeof ENHANCED_WORKSPACE_SURFACE_ID; after: string; order: number; icon: string }> = [
       {
         id: HALF_ACTION_ID,
-        label: 'Open half editor',
-        tooltip: 'Open half-screen lorebook editor',
+        label: 'Half-Screen Lorebook Editor',
+        tooltip: 'Half-Screen Lorebook Editor',
         surfaceId: HALF_WORKSPACE_SURFACE_ID,
         after: 'worldBookEditor',
         order: 50,
@@ -384,8 +384,8 @@ export function createLorebookWorkspaceModule(): SuiteModule {
       },
       {
         id: ENHANCED_ACTION_ID,
-        label: 'Open enhanced workspace',
-        tooltip: 'Open enhanced full lorebook workspace',
+        label: 'Full-Screen Lorebook Editor',
+        tooltip: 'Full-Screen Lorebook Editor',
         surfaceId: ENHANCED_WORKSPACE_SURFACE_ID,
         after: HALF_ACTION_ID,
         order: 51,
