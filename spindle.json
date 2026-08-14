@@ -3,8 +3,8 @@
   "name": "Lumiverse Suite",
   "identifier": "lumiverse_suite",
   "author": "Lumiverse contributors",
-  "github": "https://github.com/prolix-oc/Lumiverse",
-  "homepage": "https://github.com/prolix-oc/Lumiverse",
+  "github": "https://github.com/I-Sereya-I/lumiverse_suite",
+  "homepage": "https://github.com/I-Sereya-I/lumiverse_suite",
   "description": "The unified Lumiverse productivity and interface feature suite.",
   "dev_mode": true,
   "permissions": [
