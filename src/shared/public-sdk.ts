@@ -3,24 +3,9 @@ import type { SpindleMountPoint } from 'lumiverse-spindle-types'
 /** Host-provided mount or decorator root. DOM work must stay inside this node. */
 export type ScopedHostRoot = HTMLElement
 
-/** Widen host mount ids that 0.6.12's published SpindleMountPoint union does not name yet. */
+/** Narrow a runtime host mount id to the authoritative SpindleMountPoint union. */
 export function asMount(id: string): SpindleMountPoint {
   return id as SpindleMountPoint
-}
-
-/** Local stand-in; 0.6.12 does not export this handle type. */
-export type SpindleHostSurfaceHandle = {
-  update: (p?: unknown) => void
-  destroy: () => void
-  on?: (...a: unknown[]) => () => void
-}
-
-/** Local stand-in; 0.6.12 does not export this handle type. */
-export type SpindleSettingsTabHandle = {
-  id?: string
-  root?: HTMLElement
-  update?: (p?: unknown) => void
-  destroy: () => void
 }
 
 export function isScopedHostRoot(value: unknown): value is ScopedHostRoot {

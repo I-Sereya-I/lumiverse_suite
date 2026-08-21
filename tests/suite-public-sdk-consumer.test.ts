@@ -1,12 +1,12 @@
 import { afterEach, beforeEach, describe, expect, test } from 'bun:test'
 import { JSDOM } from 'jsdom'
-import type { SpindleFrontendContext } from 'lumiverse-spindle-types'
-
-import { createSuite, type SuiteHostContext, type SuiteModule } from '../src/suite'
 import type {
+  SpindleFrontendContext,
   SpindleHostSurfaceHandle,
   SpindleSettingsTabHandle,
-} from '../src/shared/public-sdk'
+} from 'lumiverse-spindle-types'
+
+import { createSuite, type SuiteHostContext, type SuiteModule } from '../src/suite'
 import { createHomepageLibraryModule } from '../src/modules/homepage_library'
 import { createLorebookTokenCountsModule } from '../src/modules/lorebook_token_counts'
 import { defaultHomepageLibrarySettings } from '../src/modules/homepage_library/types'
