@@ -26,7 +26,7 @@ export interface ConnectionsPickerHostContract {
   readonly ui?: {
     mount?(point: string): Element
     createFloatWidget?(options: { id: string; key: string; title: string; width?: number; height?: number; initialPosition?: { x: number; y: number }; chromeless?: boolean; resizable?: boolean; snapToEdge?: boolean; persistGeometry?: string; mobileClamp?: boolean; onGeometryCommit?(rect: ConnectionsPickerRect): void }): ContributionHandle
-    geometry?: { layoutElementRect?(element: Element): ConnectionsPickerRect; createResizeController(element: HTMLElement, options: { onCommit(rect: ConnectionsPickerRect): void }): (() => void) | { destroy(): void } }
+    geometry?: { layoutElementRect?(element: Element): ConnectionsPickerRect; createResizeController(element: Element, listener: (rect: DOMRect) => void): (() => void) | { destroy(): void } }
     registerSettingsTab?(options: { id: string; title: string; shortName?: string; description?: string; keywords?: readonly string[]; order?: number; sections?: readonly unknown[] }): ContributionHandle
     registerConnectionEditorTab?(options: { id: string; title: string; order?: number }): ContributionHandle
     connectionEditor?: {
@@ -145,7 +145,16 @@ export function createConnectionsPickerHostAdapter(ctx: ConnectionsPickerHostCon
       if (!(mount instanceof HTMLElement)) return undefined
       const root = mount.ownerDocument.createElement('section')
       mount.append(root)
-      const disposeResize = disposer(ctx.ui?.geometry?.createResizeController(root, { onCommit }))
+      // REQUIRES LIVE HOST VERIFICATION before consumption: this bridges the
+      // authoritative `SpindleGeometryAPI.createResizeController(element,
+      // listener)` contract (lumiverse-spindle-types src/dom.ts), converting
+      // its DOMRect callback into the module's ConnectionsPickerRect commits.
+      // The previously modeled `{ onCommit }` options shape was never verified
+      // against a live host; do not consume this path until confirmed.
+      const createResizeController = ctx.ui?.geometry?.createResizeController
+      const disposeResize = createResizeController
+        ? disposer(createResizeController(root, rect => onCommit({ x: rect.x, y: rect.y, width: rect.width, height: rect.height })))
+        : noop
       return { root, destroy: () => { disposeResize(); root.remove() } }
     },
     registerLauncher(onInvoke) {

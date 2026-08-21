@@ -55,7 +55,7 @@ export interface SuiteSettingsAPI {
   readonly core: {
     get<T>(key: string): T | undefined
     watch<T>(key: string, callback: (value: T) => void): () => void
-    list(): Array<{ key: string; permission: string | null }>
+    list(): Promise<readonly string[]> | readonly string[]
   }
 }
 

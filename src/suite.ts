@@ -92,8 +92,12 @@ const PRODUCTIVITY_TAB = {
 
 /**
  * Bridge the authoritative host settings API into the suite's
- * module-ergonomic generic view. The runtime shapes are identical; only the
- * static typing differs (generic accessors over `unknown` payloads).
+ * module-ergonomic generic view. `core.list()` mirrors the authoritative
+ * `SpindleSettingsAPI` shape exactly (`Promise<readonly string[]> |
+ * readonly string[]`, see `lumiverse-spindle-types/src/dom.ts`). The remaining
+ * divergence is typing-level only: the authoritative accessors accept
+ * synchronous or promised returns over `unknown` payloads, while this view
+ * narrows them to awaited, generically typed payloads.
  */
 function toSuiteSettings(settings: SuiteHostContext['settings']): SuiteSettingsAPI | undefined {
   return settings as SuiteSettingsAPI | undefined

@@ -58,7 +58,7 @@ function createHarness(
         if (options.canonical === false) throw new Error(`CORE_SETTING_UNKNOWN:${key}`)
         return watch(key, listener as Listener)
       },
-      list() { return [{ key: CORE_KEY, permission: null }] },
+      list() { return [CORE_KEY] },
     },
   }
 
