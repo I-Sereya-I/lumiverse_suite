@@ -1,4 +1,5 @@
-import type { ModuleId, SuiteModule, SuiteModuleContext } from '../suite'
+import type { ModuleId, SuiteHostContext, SuiteModule, SuiteModuleContext } from '../suite'
+import { asMount, readExtensionInstallationId } from './public-sdk'
 
 type SurfaceHandle = {
   update?(props: Record<string, unknown>): void
@@ -37,6 +38,7 @@ type SurfaceModuleOptions<T> = {
   readonly mountPoint: (settings: T) => string
   readonly normalize: (value: unknown) => T
   readonly enabled: (settings: T) => boolean
+  readonly shouldMountSurface?: (settings: T, coreSettings: unknown) => boolean
   readonly launcher?: {
     readonly surfaceId: 'connections_picker.launcher'
     readonly mountPoint: (settings: T) => string
@@ -78,14 +80,16 @@ function record(value: unknown): Record<string, unknown> | undefined {
 }
 
 function ownerToken(context: SuiteModuleContext): string {
-  const host = context.host as unknown as {
-    extensionInstallationId?: unknown
-    host?: { extensionInstallationId?: unknown }
-  }
-  const candidate = host.extensionInstallationId ?? host.host?.extensionInstallationId
-  return typeof candidate === 'string' && /^[A-Za-z0-9_-]{1,128}$/.test(candidate)
+  const candidate = readExtensionInstallationId(context.host)
+  return candidate && /^[A-Za-z0-9_-]{1,128}$/.test(candidate)
     ? candidate
     : 'lumiverse_suite'
+}
+
+function settingsRecord(value: unknown): Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value)
+    ? { ...value }
+    : {}
 }
 
 /** Owns only the extension lifecycle; canonical presentation remains in core. */
@@ -143,8 +147,8 @@ export function createProductivityHostSurfaceModule<T>(options: SurfaceModuleOpt
         ? ['open']
         : [],
     state: surfaceId === 'connections_picker.panel'
-      ? { ...(settings as unknown as Record<string, unknown>), open: panelOpen }
-      : settings as unknown as Record<string, unknown>,
+      ? { ...settingsRecord(settings), open: panelOpen }
+      : settingsRecord(settings),
   })
 
   const launcherProps = (): Record<string, unknown> => ({
@@ -152,18 +156,13 @@ export function createProductivityHostSurfaceModule<T>(options: SurfaceModuleOpt
     ownerToken: context ? ownerToken(context) : 'lumiverse_suite',
     generation: launcherGeneration,
     capabilities: ['open'],
-    state: settings as unknown as Record<string, unknown>,
+    state: settingsRecord(settings),
   })
 
-  const hostApi = () => {
-    const host = context ? context.host as unknown as {
-      ui?: {
-        mount?(point: string): unknown
-        registerInputBarAction?(options: QuickToolbarActionOptions & { placement: string; enabled: boolean }): InputActionHandle
-      }
-      components?: { mountHostSurface?(target: unknown, id: string, props: Record<string, unknown>): SurfaceHandle }
-    } : undefined
-    return host?.ui?.mount && host.components?.mountHostSurface ? host : undefined
+  const hostApi = (): SuiteHostContext | undefined => {
+    const host = context?.host
+    if (!host?.ui?.mount || !host.components?.mountHostSurface) return undefined
+    return host
   }
 
   const ownsCommand = (payload: unknown, surfaceId: string, command: string, expectedGeneration: number): boolean => {
@@ -193,7 +192,7 @@ export function createProductivityHostSurfaceModule<T>(options: SurfaceModuleOpt
     }
     clearLauncher()
     try {
-      const root = host.ui!.mount!(point)
+      const root = host.ui!.mount!(asMount(point))
       launcherGeneration += 1
       launcherHandle = host.components!.mountHostSurface!(root, options.launcher.surfaceId, launcherProps())
       launcherPoint = point
@@ -219,7 +218,7 @@ export function createProductivityHostSurfaceModule<T>(options: SurfaceModuleOpt
       iconName: descriptor.iconName,
       placement: 'quick_toolbar',
       enabled: true,
-    }) as InputActionHandle
+    } as Parameters<typeof register>[0]) as InputActionHandle
     quickToolbarActionStop = quickToolbarActionHandle.onClick?.(() => {
       if (!running || !settings || !options.enabled(settings)) return
       panelOpen = true
@@ -227,8 +226,14 @@ export function createProductivityHostSurfaceModule<T>(options: SurfaceModuleOpt
     })
   }
 
+  let coreSettings: unknown
+
   const mountSurface = (host: NonNullable<ReturnType<typeof hostApi>>) => {
     if (!settings || (options.surfaceId === 'connections_picker.panel' && !panelOpen)) {
+      clearSurface()
+      return
+    }
+    if (options.shouldMountSurface && !options.shouldMountSurface(settings, coreSettings)) {
       clearSurface()
       return
     }
@@ -248,7 +253,7 @@ export function createProductivityHostSurfaceModule<T>(options: SurfaceModuleOpt
     clearSurface()
     inFlightMounts.add(mountKey)
     try {
-      const root = host.ui!.mount!(point)
+      const root = host.ui!.mount!(asMount(point))
       generation += 1
       handle = host.components!.mountHostSurface!(root, surfaceId, props(surfaceId))
       mountedPoint = `${surfaceId}:${point}`
@@ -340,6 +345,7 @@ export function createProductivityHostSurfaceModule<T>(options: SurfaceModuleOpt
         privateFound: saved !== undefined,
         portraitDock: options.settingsKey === 'portraitDockSettings' ? portraitDockSummary(saved) : undefined,
       })
+      coreSettings = canonical
       const source = canonical ?? saved
       // Extension schemas only describe the fields they actively consume. Keep
       // the rest of the host-owned blob intact so a newer core field survives
@@ -404,13 +410,21 @@ export function createProductivityHostSurfaceModule<T>(options: SurfaceModuleOpt
             stopLegacyWatch = () => undefined
           }
           const next = { ...(record(value) ?? {}), ...options.normalize(value) } as T
+          const nextCore = value
+          const mountBefore = !options.shouldMountSurface || !settings
+            ? true
+            : options.shouldMountSurface(settings, coreSettings)
+          const mountAfter = !options.shouldMountSurface
+            ? true
+            : options.shouldMountSurface(next, nextCore)
           const unchanged = sameValue(settings, next)
+          coreSettings = nextCore
           traceSettings('module:canonical-watch', {
             moduleId: options.id,
             unchanged,
             portraitDock: options.settingsKey === 'portraitDockSettings' ? portraitDockSummary(next) : undefined,
           })
-          if (unchanged) return
+          if (unchanged && mountBefore === mountAfter) return
           settings = next
           reconcile()
         })

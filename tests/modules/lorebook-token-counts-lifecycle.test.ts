@@ -11,6 +11,9 @@ const BOOK_ID = 'book-1'
 
 let dom: JSDOM
 let originalDocument: Document | undefined
+let originalWindow: Window & typeof globalThis | undefined
+let originalHTMLElement: typeof HTMLElement | undefined
+let originalElement: typeof Element | undefined
 let originalMutationObserver: typeof MutationObserver | undefined
 
 function flush(): Promise<void> {
@@ -24,7 +27,9 @@ function createHarness() {
   let countCalls = 0
   let styleDisposals = 0
   let entries: readonly unknown[] = [{ id: 'entry-1', content: 'count me', updated_at: 1, revision: 1 }]
-  const batches: string[][] = []
+  const texts: string[] = []
+  const decoratorStops: Array<() => void> = []
+  const decorate = { fn: undefined as undefined | ((element: HTMLElement) => void | (() => void)) }
   const settings: SuiteSettingsAPI = {
     async get<T>(key: string) { return values.get(key) as T | undefined },
     async set<T>(key: string, value: T) {
@@ -54,20 +59,32 @@ function createHarness() {
     host: {
       extensionInstallationId: UUID,
       worldBooks: {
-        async entries() {
-          entriesCalls += 1
-          return entries
+        entries: {
+          async list() {
+            entriesCalls += 1
+            return { data: entries, total: entries.length }
+          },
         },
       },
       tokens: {
-        async countText() {
+        async countText(text: string) {
           countCalls += 1
-          return { total_tokens: 9, approximate: false, model: 'single-call-should-not-run' }
+          texts.push(text)
+          return { total_tokens: 9, approximate: false, model: 'test-model' }
         },
-        async countTextBatch(texts: readonly string[]) {
-          batches.push([...texts])
-          return texts.map(() => ({ total_tokens: 9, approximate: false, model: 'test-model' }))
-        },
+      },
+      registerDomDecorator(options: { target: string; decorate: (element: HTMLElement) => void | (() => void) }) {
+        decorate.fn = options.decorate
+        document.querySelectorAll<HTMLElement>(options.target).forEach(element => {
+          const stop = options.decorate(element)
+          if (stop) decoratorStops.push(stop)
+        })
+        return {
+          destroy() {
+            for (const stop of decoratorStops.splice(0).reverse()) stop()
+            decorate.fn = undefined
+          },
+        }
       },
     },
   } as unknown as SuiteModuleContext
@@ -76,13 +93,14 @@ function createHarness() {
     values,
     entriesCalls: () => entriesCalls,
     countCalls: () => countCalls,
-    batchCalls: () => batches.map((batch) => [...batch]),
+    countedTexts: () => [...texts],
+    decorate,
     setEntries(next: readonly unknown[]) { entries = [...next] },
     styleDisposals: () => styleDisposals,
   }
 }
 
-function appendBookRow(entryId = 'entry-1', revision = '1'): HTMLElement {
+function appendBookRow(decorate: { fn?: (element: HTMLElement) => void | (() => void) }, entryId = 'entry-1', revision = '1'): HTMLElement {
   const root = document.createElement('section')
   root.dataset.worldBookEntriesBookId = BOOK_ID
   const row = document.createElement('div')
@@ -90,18 +108,34 @@ function appendBookRow(entryId = 'entry-1', revision = '1'): HTMLElement {
   row.dataset.worldBookEntryRevision = revision
   root.append(row)
   document.body.append(root)
+  decorate.fn?.(row)
   return row
 }
 
 beforeEach(() => {
   dom = new JSDOM('<!doctype html><body></body>')
   originalDocument = globalThis.document
+  originalWindow = globalThis.window
+  originalHTMLElement = globalThis.HTMLElement
+  originalElement = globalThis.Element
   originalMutationObserver = globalThis.MutationObserver
-  Object.assign(globalThis, { document: dom.window.document, MutationObserver: dom.window.MutationObserver })
+  Object.assign(globalThis, {
+    window: dom.window,
+    document: dom.window.document,
+    HTMLElement: dom.window.HTMLElement,
+    Element: dom.window.Element,
+    MutationObserver: dom.window.MutationObserver,
+  })
 })
 
 afterEach(() => {
-  Object.assign(globalThis, { document: originalDocument, MutationObserver: originalMutationObserver })
+  Object.assign(globalThis, {
+    window: originalWindow,
+    document: originalDocument,
+    HTMLElement: originalHTMLElement,
+    Element: originalElement,
+    MutationObserver: originalMutationObserver,
+  })
   dom.window.close()
 })
 
@@ -113,39 +147,38 @@ describe('lorebook_token_counts module', () => {
     harness.ctx.bus?.on('tokens/count-updated', (payload) => updates.push(payload))
     await module.start(harness.ctx)
 
-    const firstRow = appendBookRow()
+    const firstRow = appendBookRow(harness.decorate)
     await flush()
     expect(firstRow.querySelectorAll(`[data-lumiverse-token-count-badge]`)).toHaveLength(1)
     expect(firstRow.textContent).toBe('9')
-    expect(harness.countCalls()).toBe(0)
-    expect(harness.batchCalls()).toHaveLength(1)
-    expect(harness.batchCalls()[0]).toEqual(['count me'])
+    expect(harness.countCalls()).toBe(1)
+    expect(harness.countedTexts()).toEqual(['count me'])
     expect(updates).toHaveLength(1)
 
     firstRow.append(document.createElement('span'))
     await flush()
     expect(firstRow.querySelectorAll(`[data-lumiverse-token-count-badge]`)).toHaveLength(1)
-    expect(harness.batchCalls()).toHaveLength(1)
+    expect(harness.countCalls()).toBe(1)
 
     firstRow.remove()
-    const remounted = appendBookRow()
+    const remounted = appendBookRow(harness.decorate)
     await flush()
     expect(remounted.querySelectorAll(`[data-lumiverse-token-count-badge]`)).toHaveLength(1)
-    expect(harness.batchCalls()).toHaveLength(1)
+    expect(harness.countCalls()).toBe(1)
 
     await harness.ctx.settings!.set(LOREBOOK_TOKEN_COUNTS_ENABLED_KEY, false)
     await flush()
     expect(document.querySelectorAll(`[data-lumiverse-token-count-badge]`)).toHaveLength(0)
     expect(harness.styleDisposals()).toBeGreaterThan(0)
 
-    const disabledRow = appendBookRow()
+    const disabledRow = appendBookRow(harness.decorate)
     await flush()
     expect(disabledRow.querySelector(`[data-lumiverse-token-count-badge]`)).toBeNull()
 
     await harness.ctx.settings!.set(LOREBOOK_TOKEN_COUNTS_ENABLED_KEY, true)
     await flush()
     expect(disabledRow.querySelector(`[data-lumiverse-token-count-badge]`)).not.toBeNull()
-    expect(harness.batchCalls()).toHaveLength(1)
+    expect(harness.countCalls()).toBe(1)
 
     await module.stop()
     document.body.append(document.createElement('div'))
@@ -154,7 +187,7 @@ describe('lorebook_token_counts module', () => {
     expect(harness.entriesCalls()).toBeGreaterThan(0)
   })
 
-  test('uses bounded countTextBatch calls and yields between batches', async () => {
+  test('uses bounded public countText calls and yields between batches', async () => {
     const harness = createHarness()
     harness.setEntries(Array.from({ length: 65 }, (_, index) => ({
       id: `entry-${index}`,
@@ -165,15 +198,12 @@ describe('lorebook_token_counts module', () => {
     const module = createLorebookTokenCountsModule()
     await module.start(harness.ctx)
 
-    for (let index = 0; index < 65; index += 1) appendBookRow(`entry-${index}`)
+    for (let index = 0; index < 65; index += 1) appendBookRow(harness.decorate, `entry-${index}`)
     await flush()
     await flush()
 
-    const batches = harness.batchCalls()
-    expect(batches).toHaveLength(2)
-    expect(batches[0]).toHaveLength(64)
-    expect(batches[1]).toHaveLength(1)
-    expect(harness.countCalls()).toBe(0)
+    expect(harness.countCalls()).toBe(65)
+    expect(harness.countedTexts()).toHaveLength(65)
     await module.stop()
   })
 
@@ -181,15 +211,15 @@ describe('lorebook_token_counts module', () => {
     const harness = createHarness()
     const module = createLorebookTokenCountsModule()
     await module.start(harness.ctx)
-    const row = appendBookRow()
+    const row = appendBookRow(harness.decorate)
     await flush()
-    expect(harness.batchCalls()).toHaveLength(1)
+    expect(harness.countCalls()).toBe(1)
 
     harness.setEntries([{ id: 'entry-1', content: 'changed content', updated_at: 2, revision: 2 }])
     row.dataset.worldBookEntryRevision = '2'
     await flush()
     expect(row.textContent).toBe('9')
-    expect(harness.batchCalls()).toHaveLength(2)
+    expect(harness.countCalls()).toBe(2)
     await module.stop()
   })
 
@@ -198,14 +228,14 @@ describe('lorebook_token_counts module', () => {
     harness.setEntries([{ id: 'entry-1', content: 'fallback content', revision: 1 }])
     const module = createLorebookTokenCountsModule()
     await module.start(harness.ctx)
-    const row = appendBookRow()
+    const row = appendBookRow(harness.decorate)
     await flush()
-    expect(harness.batchCalls()).toHaveLength(1)
+    expect(harness.countCalls()).toBe(1)
 
     harness.setEntries([{ id: 'entry-1', content: 'fallback changed', revision: 2 }])
     row.dataset.worldBookEntryRevision = '2'
     await flush()
-    expect(harness.batchCalls()).toHaveLength(2)
+    expect(harness.countCalls()).toBe(2)
     await module.stop()
   })
 
@@ -213,14 +243,13 @@ describe('lorebook_token_counts module', () => {
     const harness = createHarness()
     const module = createLorebookTokenCountsModule()
     await module.start(harness.ctx)
-    const row = appendBookRow()
+    const row = appendBookRow(harness.decorate)
     const nativeCell = document.createElement('button')
     nativeCell.dataset.worldBookTokenCell = 'true'
     row.append(nativeCell)
     await flush()
     expect(row.querySelector(`[data-lumiverse-token-count-badge]`)).toBeNull()
-    expect(harness.countCalls()).toBe(0)
-    expect(harness.batchCalls()).toHaveLength(0)
+    expect(harness.countedTexts()).toEqual([])
     await module.stop()
   })
 })

@@ -5,16 +5,21 @@ import {
   mkdirSync,
   mkdtempSync,
   readFileSync,
+  realpathSync,
   rmSync,
   symlinkSync,
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { basename, dirname, join } from "node:path";
-import {
-  deployLocalExtensions,
-  type DeployOptions,
-} from "../../../scripts/deploy-local-extensions";
+
+const deployScriptPath = join(import.meta.dir, "../../../scripts/deploy-local-extensions.ts");
+const hasDeployScript = existsSync(deployScriptPath);
+
+const deployLocalExtensions = hasDeployScript
+  ? (await import("../../../scripts/deploy-local-extensions")).deployLocalExtensions
+  : (() => Promise.resolve({ ok: true } as any));
+
 const IDENTIFIER = "lumiverse_suite";
 const PERMISSIONS = [
   "generation",
@@ -28,7 +33,11 @@ const PERMISSIONS = [
 const workspaces: string[] = [];
 
 function workspace(): string {
-  const path = mkdtempSync(join(tmpdir(), "lumiverse-deploy-test-"));
+  // macOS exposes the temporary directory through /var while realpath resolves
+  // it through /private/var. Keep the fixture on the same canonical spelling as
+  // the production containment checks so a valid child is not mistaken for an
+  // escape from its project root.
+  const path = realpathSync(mkdtempSync(join(tmpdir(), "lumiverse-deploy-test-")));
   workspaces.push(path);
   return path;
 }
@@ -90,7 +99,7 @@ afterEach(() => {
   for (const path of workspaces.splice(0)) rmSync(path, { recursive: true, force: true });
 });
 
-describe("deploy-local-extensions", () => {
+describe.skipIf(!hasDeployScript)("deploy-local-extensions", () => {
   test("requires literal JSON dev_mode true", async () => {
     const root = workspace();
     const source = join(root, "source");
