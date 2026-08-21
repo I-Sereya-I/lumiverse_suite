@@ -389,7 +389,8 @@ export function createLorebookTokenCountsModule(): SuiteModule {
     })
   }
 
-  const decorateRow = (element: HTMLElement): void | (() => void) => {
+  const decorateRow = (element: Element): void | (() => void) => {
+    if (!(element instanceof HTMLElement)) return
     const row = element
     const entryId = row.dataset.worldBookEntryRow
     const bookId = bookIdFromScopedRow(row)

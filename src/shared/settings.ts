@@ -41,7 +41,12 @@ export function buildSettingPath(moduleId: string, setting: string): string {
   return `${moduleId}:${setting}`
 }
 
-/** Local contract until the published spindle-types package includes H3. */
+/**
+ * Suite-facing settings contract. The authoritative `SpindleSettingsAPI` in
+ * `lumiverse-spindle-types` is consumed at the host boundary (see
+ * `toSuiteSettings` in `src/suite.ts`); this generic view keeps module call
+ * sites strongly typed.
+ */
 export interface SuiteSettingsAPI {
   get<T>(key: string): Promise<T | undefined>
   set<T>(key: string, value: T): Promise<void>

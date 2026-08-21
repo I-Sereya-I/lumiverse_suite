@@ -16,73 +16,20 @@ import {
   type SuiteStyleRegistry,
 } from './shared/styles'
 
-export interface SuiteWorldBooksAPI {
-  readonly entries: {
-    list(bookId: string): Promise<{ readonly data: readonly unknown[]; readonly total: number }>
-  }
-}
-
-export interface SuiteTokenCountOptions {
-  readonly model?: string
-  readonly modelSource?: 'main' | 'sidecar'
-}
-
-export interface SuiteTokensAPI {
-  countText(text: string, options?: SuiteTokenCountOptions): Promise<unknown>
-}
-
-/** Public 0.6.16 registration surfaces that 0.6.12's published types do not yet name. */
+/**
+ * Suite-specific host surface additions layered on top of the authoritative
+ * `lumiverse-spindle-types` frontend context. Registration surfaces, settings,
+ * worldBooks, tokens, and the UI/component handles are consumed from the
+ * published types directly.
+ */
 export interface SuitePublicHostSurfaces {
-  readonly settings?: SuiteSettingsAPI
+  /** Style injection with suite scope options; extends the host DOM helper. */
   readonly dom?: SuiteDOMAPI
-  readonly onTeardown?: (handler: () => void) => () => void
-  readonly worldBooks?: SuiteWorldBooksAPI
-  readonly tokens?: SuiteTokensAPI
   /** Flattened descriptor field accepted by suite test doubles. */
   readonly extensionInstallationId?: string
-  registerDomDecorator?(options: {
-    readonly target: string
-    decorate(element: HTMLElement): void | (() => void)
-  }): { destroy(): void }
-  registerComponentOverride?(options: {
-    readonly componentId: string
-    render?(target: HTMLElement, props: Record<string, unknown>): void | (() => void)
-  }): { destroy(): void }
-  registerMessageAction?(options: {
-    readonly id: string
-    readonly label: string
-    onClick(messageId: string): void
-  }): { destroy(): void }
 }
 
-export type SuiteHostContext = SpindleFrontendContext & SuitePublicHostSurfaces & {
-  readonly ui: SpindleFrontendContext['ui'] & {
-    registerSettingsTab?(options: { readonly id: string; readonly title: string }): {
-      readonly id: string
-      readonly root: HTMLElement
-      update?(options?: { readonly id?: string; readonly title?: string }): void
-      destroy(): void
-    }
-    geometry?: {
-      layoutElementRect(element: Element): DOMRect | { readonly height: number }
-      createResizeController?(
-        element: HTMLElement,
-        options: unknown,
-      ): { destroy(): void } | (() => void)
-    }
-  }
-  readonly components: SpindleFrontendContext['components'] & {
-    mountHostSurface(
-      target: Element,
-      surfaceId: string,
-      props?: Record<string, unknown>,
-    ): {
-      update?(props: Record<string, unknown>): void
-      destroy(): void
-      on?(event: string, listener: (payload: unknown) => void): () => void
-    }
-  }
-}
+export type SuiteHostContext = SpindleFrontendContext & SuitePublicHostSurfaces
 
 export const MODULE_IDS = [
   'quick_toolbar',
@@ -141,6 +88,15 @@ export interface LumiverseSuite {
 const PRODUCTIVITY_TAB = {
   id: 'productivity',
   title: 'UI Productivity',
+}
+
+/**
+ * Bridge the authoritative host settings API into the suite's
+ * module-ergonomic generic view. The runtime shapes are identical; only the
+ * static typing differs (generic accessors over `unknown` payloads).
+ */
+function toSuiteSettings(settings: SuiteHostContext['settings']): SuiteSettingsAPI | undefined {
+  return settings as SuiteSettingsAPI | undefined
 }
 
 function createProductivitySettingsLifecycle(ctx: SuiteHostContext, generation: number): () => void {
@@ -215,7 +171,7 @@ export function createSuite(
         try {
           await registration.module.start({
             moduleId: registration.module.id,
-            settings: ctx.settings,
+            settings: toSuiteSettings(ctx.settings),
             styles: moduleStyles,
             host: ctx,
             bus,
