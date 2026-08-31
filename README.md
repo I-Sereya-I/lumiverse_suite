@@ -83,7 +83,7 @@ https://github.com/user-attachments/assets/2e98bb8d-8cc7-4e0a-b9ea-72833ac62ad8
 
 ### In-situ toolbar configurator & geometry metrics
 
-The in-situ `TOOLBAR` drawer lets you adjust icon size, label typography, scale, rotation, opacity, and drag-and-drop reorder toolbar cards live on the active surface.
+The in-situ `TOOLBAR` drawer lets you adjust icon size, label typography, scale, rotation, opacity, and drag-and-drop reorder toolbar cards live on the active surface. Added top dock placement options for both the standard V1 Free and V2 Adjacent variants, including width-stretch and native action retention.
 
 https://github.com/user-attachments/assets/f9d7ac50-e397-4f4a-a2c9-c175002342dd
 
