@@ -77,39 +77,65 @@ https://github.com/user-attachments/assets/ebb40af0-09e5-4712-a6af-300c41d52320
 
 ### Composer customization & quick actions
 
-`composer_actions` and `customize_composer` provide a modular action library with 106+ search-filtered tools, drag-and-drop reordering, and direct inline parameter drawers (like the Author's Note popover) attached directly to the message input bar.
+`composer_actions` and `customize_composer` introduce a brand-new customization button and configuration modal built from scratch for the chat input bar—features that did not exist previously in Lumiverse.
 
-https://raw.githubusercontent.com/I-Sereya-I/lumiverse_suite/main/docs/showcase/composer-customization.mp4
+- **106+ Action Catalog:** Attach, hide, and manage modular actions directly from the composer.
+- **Live Drag-and-Drop:** Dedicated reorder handles let you structure buttons to match your typing workflow.
+- **Inline Author's Note Drawer:** Trigger an inline parameter drawer to modify instructions, injection depth, and role directly above the input box without navigating away from the conversation.
 
-### In-situ toolbar configurator & geometry metrics
+https://github.com/user-attachments/assets/2e98bb8d-8cc7-4e0a-b9ea-72833ac62ad8
 
-The in-situ `TOOLBAR` drawer lets you adjust icon size, label typography, scale, rotation, opacity, and drag-and-drop reorder toolbar cards live on the active surface. Added top dock placement options for both the standard V1 Free and V2 Adjacent variants, including width-stretch and native action retention.
+*([Public mirror](https://raw.githubusercontent.com/I-Sereya-I/lumiverse_suite/main/docs/showcase/composer-customization.mp4))*
 
-#### In-situ slider controls
+### Quick toolbar in-situ configurator & top dock placements
 
-https://raw.githubusercontent.com/I-Sereya-I/lumiverse_suite/main/docs/showcase/quick-toolbar-insitu-controls.mp4
+`quick_toolbar` now includes an in-situ `TOOLBAR` drawer with live geometry sliders and brand-new top dock placement modes for both toolbar variants:
+
+- **Top Dock for V1 and V2:** Added a dedicated **Chat top dock** option for both the standard **V1 Free** and **V2 Adjacent** variants, with native action retention and width-stretch support.
+- **Full-Width Extended Top Bar:** Option to extend and stretch the top bar fully across the chat width.
+- **In-Situ Sliders & Live Drag-and-Drop:** Adjust icon size (20px–33px), label typography, opacity, scale, and rotation, plus reorder icons on the live surface.
 
 #### Full-width extended top dock layout
 
-https://raw.githubusercontent.com/I-Sereya-I/lumiverse_suite/main/docs/showcase/quick-toolbar-top-dock-extended.mp4
+https://github.com/user-attachments/assets/611de0e2-8d97-4941-8512-61172d45366c
+
+*([Public mirror](https://raw.githubusercontent.com/I-Sereya-I/lumiverse_suite/main/docs/showcase/quick-toolbar-top-dock-extended.mp4))*
+
+#### In-situ slider controls
+
+https://github.com/user-attachments/assets/f9d7ac50-e397-4f4a-a2c9-c175002342dd
+
+*([Public mirror](https://raw.githubusercontent.com/I-Sereya-I/lumiverse_suite/main/docs/showcase/quick-toolbar-insitu-controls.mp4))*
 
 ### Message editor "Edit and Send" ergonomics
 
-Configure button placement (`Left` vs. `Right`), branching behaviors, and active connection pinning directly from the Productivity surface for ergonomic one-click message edits.
+Introduces a brand-new **Edit and Send** button to the message editor that did not exist previously:
 
-https://raw.githubusercontent.com/I-Sereya-I/lumiverse_suite/main/docs/showcase/edit-and-send-positioning.mp4
+- **Left/Right Ergonomic Positioning:** Toggle the Edit and Send button position between `Left` and `Right` to suit one-handed, desktop, or tablet workflows.
+- **Instant Swipes & Branching:** Edit previous messages and instantly trigger a generation swipe, with controls to branch or continue linearly.
+
+https://github.com/user-attachments/assets/7e0c48fd-f8c2-440f-9036-ad5027ae0c56
+
+*([Public mirror](https://raw.githubusercontent.com/I-Sereya-I/lumiverse_suite/main/docs/showcase/edit-and-send-positioning.mp4))*
 
 ### Embeddings readiness & Memory Cortex fallback chains
 
-Expose multi-tier secondary LLM sidecar connections (e.g. Gemini tiers with offline heuristic fallback) and 4-step vector embeddings readiness diagnostics.
+Adds brand-new fallback pipelines for both **Vector Embeddings** and **Memory Cortex**—neither feature had fallback options in Lumiverse prior to this update:
+
+- **Embeddings Diagnostics & Fallback Profiles:** 4-step readiness status check (status, API key, dimensions, vectorization) and fallback connection profiles.
+- **Multi-Tier Secondary LLM Sidecars:** Configure failover model tiers for Cortex extraction (e.g. Gemini tiers cascading down to offline heuristic parsing).
 
 #### Embeddings & Cortex model selection
 
-https://raw.githubusercontent.com/I-Sereya-I/lumiverse_suite/main/docs/showcase/cortex-embeddings-model-selector.mp4
+https://github.com/user-attachments/assets/c5d1fcf3-fd3f-4d4c-b8d1-01476d85ee73
+
+*([Public mirror](https://raw.githubusercontent.com/I-Sereya-I/lumiverse_suite/main/docs/showcase/cortex-embeddings-model-selector.mp4))*
 
 #### Multi-tier LLM sidecar fallback pipeline
 
-https://raw.githubusercontent.com/I-Sereya-I/lumiverse_suite/main/docs/showcase/cortex-sidecar-fallbacks.mp4
+https://github.com/user-attachments/assets/da3b8bd6-74ef-4080-869d-f22a7ba96ce0
+
+*([Public mirror](https://raw.githubusercontent.com/I-Sereya-I/lumiverse_suite/main/docs/showcase/cortex-sidecar-fallbacks.mp4))*
 
 ### Suite settings
 
