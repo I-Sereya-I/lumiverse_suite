@@ -10,7 +10,7 @@
     "test": "bun test"
   },
   "dependencies": {
-    "lumiverse-spindle-types": "file:../lumiverse-spindle-types"
+    "lumiverse-spindle-types": "0.6.27"
   },
   "devDependencies": {
     "@typescript-eslint/parser": "^8.64.0",
