@@ -79,7 +79,7 @@ https://github.com/user-attachments/assets/ebb40af0-09e5-4712-a6af-300c41d52320
 
 `composer_actions` and `customize_composer` provide a modular action library with 106+ search-filtered tools, drag-and-drop reordering, and direct inline parameter drawers (like the Author's Note popover) attached directly to the message input bar.
 
-https://github.com/user-attachments/assets/2e98bb8d-8cc7-4e0a-b9ea-72833ac62ad8
+https://raw.githubusercontent.com/I-Sereya-I/lumiverse_suite/main/docs/showcase/composer-customization.mp4
 
 ### In-situ toolbar configurator & geometry metrics
 
@@ -87,17 +87,17 @@ The in-situ `TOOLBAR` drawer lets you adjust icon size, label typography, scale,
 
 #### In-situ slider controls
 
-https://github.com/user-attachments/assets/f9d7ac50-e397-4f4a-a2c9-c175002342dd
+https://raw.githubusercontent.com/I-Sereya-I/lumiverse_suite/main/docs/showcase/quick-toolbar-insitu-controls.mp4
 
 #### Full-width extended top dock layout
 
-https://github.com/user-attachments/assets/611de0e2-8d97-4941-8512-61172d45366c
+https://raw.githubusercontent.com/I-Sereya-I/lumiverse_suite/main/docs/showcase/quick-toolbar-top-dock-extended.mp4
 
 ### Message editor "Edit and Send" ergonomics
 
 Configure button placement (`Left` vs. `Right`), branching behaviors, and active connection pinning directly from the Productivity surface for ergonomic one-click message edits.
 
-https://github.com/user-attachments/assets/7e0c48fd-f8c2-440f-9036-ad5027ae0c56
+https://raw.githubusercontent.com/I-Sereya-I/lumiverse_suite/main/docs/showcase/edit-and-send-positioning.mp4
 
 ### Embeddings readiness & Memory Cortex fallback chains
 
@@ -105,11 +105,11 @@ Expose multi-tier secondary LLM sidecar connections (e.g. Gemini tiers with offl
 
 #### Embeddings & Cortex model selection
 
-https://github.com/user-attachments/assets/c5d1fcf3-fd3f-4d4c-b8d1-01476d85ee73
+https://raw.githubusercontent.com/I-Sereya-I/lumiverse_suite/main/docs/showcase/cortex-embeddings-model-selector.mp4
 
 #### Multi-tier LLM sidecar fallback pipeline
 
-https://github.com/user-attachments/assets/da3b8bd6-74ef-4080-869d-f22a7ba96ce0
+https://raw.githubusercontent.com/I-Sereya-I/lumiverse_suite/main/docs/showcase/cortex-sidecar-fallbacks.mp4
 
 ### Suite settings
 
