@@ -41,10 +41,13 @@ describe('suite public SDK consumer', () => {
     const decoratorTargets: string[] = []
 
     const settingsTab: SpindleSettingsTabHandle = {
-      id: 'productivity',
+      registrationId: 'productivity',
+      tabId: 'productivity',
       root: scopedRoot,
-      update() {},
+      setTitle() {},
+      activate() {},
       destroy() { destroyed.settingsTab += 1 },
+      onActivate: () => () => undefined,
     }
     const surfaceHandle = (): SpindleHostSurfaceHandle => ({
       update() {},

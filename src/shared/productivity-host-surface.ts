@@ -1,3 +1,4 @@
+import type { SpindleHostSurfaceProps } from 'lumiverse-spindle-types'
 import type { ModuleId, SuiteHostContext, SuiteModule, SuiteModuleContext } from '../suite'
 import { asMount, readExtensionInstallationId } from './public-sdk'
 
@@ -86,7 +87,7 @@ function ownerToken(context: SuiteModuleContext): string {
     : 'lumiverse_suite'
 }
 
-function settingsRecord(value: unknown): Record<string, unknown> {
+function settingsRecord(value: unknown): SpindleHostSurfaceProps {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
     ? { ...value }
     : {}
@@ -137,7 +138,7 @@ export function createProductivityHostSurfaceModule<T>(options: SurfaceModuleOpt
     quickToolbarActionHandle = undefined
   }
 
-  const props = (surfaceId: SurfaceModuleOptions<T>['surfaceId'] | 'activated_lore.panel'): Record<string, unknown> => ({
+  const props = (surfaceId: SurfaceModuleOptions<T>['surfaceId'] | 'activated_lore.panel'): SpindleHostSurfaceProps => ({
     contractVersion: 1,
     ownerToken: context ? ownerToken(context) : 'lumiverse_suite',
     generation,
@@ -151,7 +152,7 @@ export function createProductivityHostSurfaceModule<T>(options: SurfaceModuleOpt
       : settingsRecord(settings),
   })
 
-  const launcherProps = (): Record<string, unknown> => ({
+  const launcherProps = (): SpindleHostSurfaceProps => ({
     contractVersion: 1,
     ownerToken: context ? ownerToken(context) : 'lumiverse_suite',
     generation: launcherGeneration,
