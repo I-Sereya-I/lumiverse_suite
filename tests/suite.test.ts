@@ -153,8 +153,9 @@ function module(id: ModuleId, calls: string[]): SuiteModule {
 }
 
 describe('Lumiverse Suite runtime', () => {
-  test('publishes the fixed nine-module registry', () => {
+  test('publishes the fixed ten-module registry', () => {
     expect(MODULE_IDS).toEqual([
+      'chat_controls',
       'quick_toolbar',
       'lore_indicator',
       'connections_picker',

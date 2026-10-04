@@ -71,6 +71,7 @@ describe('suite settings', () => {
 
     expect(Object.keys(MODULE_ENABLE_DEFAULTS)).toEqual([...MODULE_IDS])
     expect(backfilled).toEqual({
+      chat_controls: false,
       quick_toolbar: true,
       lore_indicator: false,
       connections_picker: false,
