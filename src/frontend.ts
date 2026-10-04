@@ -2,6 +2,7 @@ import { createSuite } from './suite'
 import { installThemeBridge } from './shared/theme'
 import { createLoreIndicatorModule } from './modules/lore_indicator'
 import { createQuickToolbarModule } from './modules/quick_toolbar'
+import { createChatControlsModule } from './modules/chat_controls'
 import { createConnectionsPickerModule } from './modules/connections_picker'
 import { createCharacterLibraryScopeModule } from './modules/character_library_scope'
 import { createCharacterDisplayModule } from './modules/character_display'
@@ -20,6 +21,7 @@ export async function setup(
 ): Promise<() => Promise<void>> {
   const disposeThemeBridge = installThemeBridge(css => ctx.dom.addStyle(css), ctx)
   const suite = createSuite(ctx, [
+    { module: createChatControlsModule(), enabled: true },
     { module: createQuickToolbarModule(ctx), enabled: true },
     { module: createLoreIndicatorModule(ctx), enabled: true },
     { module: createConnectionsPickerModule(), enabled: true },

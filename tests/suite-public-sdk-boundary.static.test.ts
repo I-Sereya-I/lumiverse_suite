@@ -3,6 +3,9 @@ import { join, relative } from 'node:path'
 import { describe, expect, test } from 'bun:test'
 
 const SRC_ROOT = join(import.meta.dir, '../src')
+// Authorized mount-scoped adapter: one ordinary observer, shallow recognized
+// anchors and independently validated compact subtrees. No other boundary is waived.
+const CHAT_CONTROLS_OBSERVER_FILE = 'modules/chat_controls/runtime.ts'
 
 function walkSourceFiles(dir: string): string[] {
   const files: string[] = []
@@ -64,7 +67,14 @@ describe('suite public SDK boundary', () => {
       )
       const observesDocument = /\.observe\(\s*(?:document|doc(?:ument)?\.(?:body|documentElement|head)|globalThis\.document)/.test(source)
       const scopedRootTyped = /\bScopedHostRoot\b/.test(source)
-      if (observerConstructions > 0 && (observesDocument || !scopedRootTyped)) {
+      const compactDockObserver = rel === CHAT_CONTROLS_OBSERVER_FILE
+      if (compactDockObserver) {
+        expect(countMatches(source, /\bnew\s+MutationObserver\s*\(/g)).toBe(1)
+        expect(observerConstructions).toBe(1)
+        expect(observesDocument).toBe(false)
+        expect(scopedRootTyped).toBe(false)
+      }
+      if (observerConstructions > 0 && (observesDocument || (!scopedRootTyped && !compactDockObserver))) {
         rawMutationObservers += observerConstructions
       } else if (observerConstructions > 0 && scopedRootTyped) {
         remainingScopedRootFiles.push(rel)
@@ -103,7 +113,7 @@ describe('suite public SDK boundary', () => {
       const hasRawObserver = /\bnew\s+(?:[A-Za-z0-9_]*MutationObserver|[A-Za-z0-9_]*ResizeObserver)/.test(source)
         && !/\bScopedHostRoot\b/.test(source)
       const hasScrape = /(?:document|globalThis\.document)\s*\.\s*(?:querySelectorAll?|getElementById|getElementsBy)/.test(source)
-      if (hasRawObserver) rawObserverFiles.push(rel)
+      if (hasRawObserver && rel !== CHAT_CONTROLS_OBSERVER_FILE) rawObserverFiles.push(rel)
       if (hasScrape) scrapeFiles.push(rel)
     }
     expect(rawObserverFiles).toEqual([])

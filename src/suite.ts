@@ -32,6 +32,7 @@ export interface SuitePublicHostSurfaces {
 export type SuiteHostContext = SpindleFrontendContext & SuitePublicHostSurfaces
 
 export const MODULE_IDS = [
+  'chat_controls',
   'quick_toolbar',
   'lore_indicator',
   'connections_picker',
